@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
 import { AppRegistry,View, Text, TextInput, ListView, ScrollView, TouchableHighlight } from 'react-native';
 
-var array = [];
-const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
 export default class todoApp extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       text: "",
-      dataSource: ds.cloneWithRows([])
+      array: []
     };
   }
 
   render() {
+
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    var dataSource = ds.cloneWithRows(this.state.array)
+
     return (
       <View style={{marginTop: 20}}>
         <TextInput
@@ -26,7 +27,7 @@ export default class todoApp extends Component {
         />
         <ScrollView style={{marginTop: 20}}>
           <ListView
-            dataSource={this.state.dataSource}
+            dataSource={dataSource}
             renderRow={(rowData) => <Text style={{fontSize: 20}}>{rowData}</Text>}
           />
         </ScrollView>
@@ -42,11 +43,12 @@ export default class todoApp extends Component {
 
   _onEndEditing = () => {
 
-    array.push(this.state.text)
+    var data = this.state.array
+    data.push(this.state.text)
 
     this.setState({
       text: "",
-      dataSource: ds.cloneWithRows(array)
+      array: data
     })
   }
 
