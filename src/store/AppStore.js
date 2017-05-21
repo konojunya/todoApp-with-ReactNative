@@ -6,11 +6,6 @@ import assign from "object-assign"
 const CHANGE_EVENT = "change"
 
 var _todos = {}
-_todos["hoge"] = {
-  id: "hoge",
-  complete: false,
-  text: "hoge"
-}
 
 let create = (text) => {
   var id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);

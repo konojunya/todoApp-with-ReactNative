@@ -1,32 +1,53 @@
 import React from "react"
-import { Text } from "react-native"
+import { View,Text,ListView,Button } from "react-native"
 
 import AppStore from "../store/AppStore"
 
 import TodoListView from "./list/TodoListView.jsx.js"
-
-let getAll = () => AppStore.getAll()
+import InputText from "./input/InputText.jsx.js"
 
 export default class App extends React.Component{
 
   constructor(){
     super();
     this.state = {
-      todos: getAll()
+      todos: new ListView.DataSource({
+        rowHasChanged: (row1, row2) => row1 !== row2
+      })
     }
   }
 
-  componentDidMount = () => AppStore.addChangeListener(this._onChange)
+  componentDidMount = () => {
+    this.setState({
+      todos: this.state.todos.cloneWithRows(AppStore.getAll())
+    })
+    AppStore.addChangeListener(this._onChange)
+  }
+
   componentWillUnmount = () => AppStore.removeChangeListener(this._onChange)
 
   render(){
     return(
-      <TodoListView/>
+      <View>
+        <InputText/>
+        <TodoListView todos={this.state.todos}/>
+        <View style={{
+          width: 50,
+          height: 50,
+          backgroundColor: "#FFEB3B",
+          position: "absolute",
+          bottom: 30,
+          right: 30,
+          borderRadius: 50
+        }} />
+      </View>
     )
   }
 
   _onChange = () => {
-    this.setState(getAll())
+    this.setState({
+      todos: this.state.todos.cloneWithRows(AppStore.getAll())
+    })
   }
 
 }
